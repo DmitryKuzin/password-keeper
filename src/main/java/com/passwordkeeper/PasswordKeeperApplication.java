@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
 @SpringBootApplication
-@EnableJpaRepositories
 public class PasswordKeeperApplication {
 
     public static void main(String[] args) {
