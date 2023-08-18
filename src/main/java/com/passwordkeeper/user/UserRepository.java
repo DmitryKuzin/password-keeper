@@ -2,7 +2,7 @@ package com.passwordkeeper.user;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
-    User findByLogin(String login);
+    UserEntity findByLogin(String login);
 }

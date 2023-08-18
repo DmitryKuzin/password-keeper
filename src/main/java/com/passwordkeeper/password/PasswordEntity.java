@@ -3,8 +3,7 @@ package com.passwordkeeper.password;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Getter
@@ -14,10 +13,13 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Builder
-public class Password {
+@Table(name = "passwords")
+public class PasswordEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
+    private Long id;
     private String userId;
     private String websiteName;
     private String password;
@@ -26,7 +28,7 @@ public class Password {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Password password = (Password) o;
+        PasswordEntity password = (PasswordEntity) o;
         return id != null && Objects.equals(id, password.id);
     }
 

@@ -3,10 +3,7 @@ package com.passwordkeeper.user;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 
@@ -17,10 +14,12 @@ import java.util.Objects;
 @ToString
 @Builder
 @Entity
-public class User {
+@Table(name = "users")
+public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     private Long id;
     private String login;
     private String password;
@@ -31,7 +30,7 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
+        UserEntity user = (UserEntity) o;
         return id != null && Objects.equals(id, user.id);
     }
 

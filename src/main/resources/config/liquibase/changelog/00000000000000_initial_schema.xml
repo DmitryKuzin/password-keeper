@@ -1,8 +1,8 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     <!--Added the entity Car-->
     <changeSet id="00000000000001" author="jhipster">
-        <createTable tableName="user">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+        <createTable tableName="users">
+            <column name="id" type="serial">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="login" type="varchar(50)">
@@ -12,8 +12,8 @@
             <column name="account_type" type="varchar(50)" />
             <column name="passwords_count" type="integer" />
         </createTable>
-        <createTable tableName="password">
-            <column name="id" type="bigint">
+        <createTable tableName="passwords">
+            <column name="id" type="serial">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="user_id" type="varchar(150)">
@@ -22,8 +22,8 @@
             <column name="website_name" type="varchar(255)" />
             <column name="password" type="varchar(255)" />
         </createTable>
-        <createTable tableName="subscription">
-            <column name="subscription_id" type="varchar(255)">
+        <createTable tableName="subscriptions">
+            <column name="subscription_id" type="serial">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="user_id" type="varchar(255)">

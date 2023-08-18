@@ -39,7 +39,7 @@ public class SubscriptionService {
             return SubscriptionDto.builder()
                     .expirationDate(dateToString(subscription.getExpirationDate()))
                     .status(SubscriptionStatus.valueOf(subscription.getStatus()))
-                    .subscriptionId(subscription.getSubscriptionId())
+                    .subscriptionId(String.valueOf(subscription.getSubscriptionId()))
                     .paymentId(subscription.getPaymentId())
                     .build();
         }
@@ -60,7 +60,7 @@ public class SubscriptionService {
                 Subscription saved = subscriptionRepository.save(subscription);
                 userService.updateUserAccountTypeByUserId(saved.getUserId(), UserAccountType.PREMIUM);
                 return SubscriptionDto.builder()
-                        .subscriptionId(saved.getSubscriptionId())
+                        .subscriptionId(String.valueOf(saved.getSubscriptionId()))
                         .paymentId(saved.getPaymentId())
                         .status(SubscriptionStatus.valueOf(saved.getStatus()))
                         .expirationDate(dateToString(saved.getExpirationDate()))
@@ -77,7 +77,6 @@ public class SubscriptionService {
         }
         String paymentId = paymentRepository.requestPayment();
         Subscription saved = subscriptionRepository.save(Subscription.builder()
-                .subscriptionId(generateId())
                 .status(SubscriptionStatus.PAYMENT_IN_PROCESS.name())
                 .userId(subscriptionRequestDto.getUserId())
                 .paymentId(paymentId)
@@ -86,7 +85,7 @@ public class SubscriptionService {
 
         return SubscriptionDto.builder()
                 .status(SubscriptionStatus.PAYMENT_IN_PROCESS)
-                .subscriptionId(saved.getSubscriptionId())
+                .subscriptionId(String.valueOf(saved.getSubscriptionId()))
                 .expirationDate(dateToString(saved.getExpirationDate()))
                 .paymentId(paymentId).build();
     }
@@ -110,7 +109,7 @@ public class SubscriptionService {
         Subscription subscription = subscriptionRepository.findByUserId(userId);
         subscriptionRepository.delete(subscription);
         return SubscriptionDto.builder()
-                .subscriptionId(subscription.getSubscriptionId())
+                .subscriptionId(String.valueOf(subscription.getSubscriptionId()))
                 .paymentId(subscription.getPaymentId())
                 .status(SubscriptionStatus.DISABLED)
                 .build();

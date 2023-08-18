@@ -3,8 +3,7 @@ package com.passwordkeeper.subscription;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,10 +14,13 @@ import java.util.Objects;
 @ToString
 @Builder
 @Entity
+@Table(name = "subscriptions")
 public class Subscription {
 
     @Id
-    private String subscriptionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
+    private Long subscriptionId;
     private String userId;
     private String status;
     private Date expirationDate;

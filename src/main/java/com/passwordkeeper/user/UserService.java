@@ -15,18 +15,18 @@ public class UserService {
     private UserRepository userRepository;
 
     public void updateUserAccountTypeByUserId(String userId, UserAccountType userAccountType) {
-        Optional<User> byId = userRepository.findById(Long.parseLong(userId));
+        Optional<UserEntity> byId = userRepository.findById(Long.parseLong(userId));
         if (byId.isPresent()) {
-            User user = byId.get();
+            UserEntity user = byId.get();
             user.setAccountType(userAccountType.name());
             userRepository.save(user);
         }
     }
 
     public UserDto findById(String userId) {
-        Optional<User> result = userRepository.findById(Long.valueOf(userId));
+        Optional<UserEntity> result = userRepository.findById(Long.valueOf(userId));
         if (result.isPresent()) {
-            User user = result.get();
+            UserEntity user = result.get();
             return UserDto.builder()
                     .id(String.valueOf(user.getId()))
                     .login(user.getLogin())
@@ -38,8 +38,8 @@ public class UserService {
     }
 
     public UserDto create(UserRequestDto userRequestDto) {
-        User saved = userRepository.save(
-                User.builder()
+        UserEntity saved = userRepository.save(
+                UserEntity.builder()
                         .login(userRequestDto.getLogin())
                         .password(userRequestDto.getPassword())
                         .passwordsCount(0)
@@ -54,7 +54,7 @@ public class UserService {
     }
 
     public UserDto findByLogin(String login) {
-        User user = userRepository.findByLogin(login);
+        UserEntity user = userRepository.findByLogin(login);
         if (user != null) {
             return UserDto.builder()
                     .id(String.valueOf(user.getId()))
@@ -67,9 +67,9 @@ public class UserService {
     }
 
     public boolean passwordsCountIncremented(String userId) {
-        Optional<User> result = userRepository.findById(Long.valueOf(userId));
+        Optional<UserEntity> result = userRepository.findById(Long.valueOf(userId));
         if (result.isPresent()) {
-            User user = result.get();
+            UserEntity user = result.get();
             UserAccountType userAccountType = UserAccountType.valueOf(user.getAccountType());
             if (PREMIUM == userAccountType) {
                 if (user.getPasswordsCount() < 10000) {
@@ -85,7 +85,7 @@ public class UserService {
         throw new IllegalStateException("Cant find user");
     }
 
-    private boolean incrementPasswordsCount(User user) {
+    private boolean incrementPasswordsCount(UserEntity user) {
         user.setPasswordsCount(user.getPasswordsCount() + 1);
         userRepository.save(user);
         return true;

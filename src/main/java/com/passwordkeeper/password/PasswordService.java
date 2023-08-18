@@ -41,10 +41,9 @@ public class PasswordService {
                 return false;
             }
             passwordRepository.save(
-                    Password.builder()
+                    PasswordEntity.builder()
                             .password(dto.getPassword())
                             .websiteName(dto.getWebsite_name())
-                            .id(IdGenerator.generateId())
                             .userId(dto.getUserId())
                             .build()
             );
@@ -57,7 +56,7 @@ public class PasswordService {
 
     public String getPasswordByWebsiteNameAndUserId(String websiteName, String userId) {
         if (websiteName != null && !websiteName.isEmpty()) {
-            Password password = passwordRepository.findPasswordByWebsiteNameAndUserId(websiteName, userId);
+            PasswordEntity password = passwordRepository.findPasswordByWebsiteNameAndUserId(websiteName, userId);
             if (password != null) {
                 return password.getPassword();
             }
