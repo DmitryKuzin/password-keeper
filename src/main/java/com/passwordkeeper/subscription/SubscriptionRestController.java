@@ -1,37 +1,47 @@
 package com.passwordkeeper.subscription;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("subscriptions")
 public class SubscriptionRestController {
 
     @Autowired
     private SubscriptionService subscriptionService;
 
-    @GetMapping("subscriptions")
-    public SubscriptionDto getSubscriptionByUSerId(@RequestParam("user_id") String userId) {
-        return subscriptionService.getSubscriptionByUserId(userId);
+    @GetMapping
+    public ResponseEntity<SubscriptionDto> getSubscriptionByUSerId(@RequestParam("user_id") String userId) {
+        SubscriptionDto subscription = subscriptionService.getSubscriptionByUserId(userId);
+        if (subscription.getStatus() != SubscriptionStatus.NOT_FOUND) {
+            return ResponseEntity.ok(subscription);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("subscriptions")
-    public SubscriptionDto requestSubscription(@RequestBody SubscriptionRequestDto subscriptionRequestDto) {
-        return subscriptionService.requestSubscriptionCreation(subscriptionRequestDto);
+    @PostMapping
+    public ResponseEntity<SubscriptionDto> requestSubscription(@RequestBody SubscriptionRequestDto subscriptionRequestDto) {
+        SubscriptionDto subscriptionDto = subscriptionService.requestSubscriptionCreation(subscriptionRequestDto);
+        if (subscriptionDto.getStatus() == SubscriptionStatus.ENABLED) {
+            return ResponseEntity.badRequest().body(subscriptionDto);
+        }
+        return ResponseEntity.ok(subscriptionDto);
     }
 
-    @GetMapping("subscriptions/activation")
-    public SubscriptionDto checkSubscription(@RequestParam("payment_id") String paymentId,
+    @GetMapping("/activation")
+    public ResponseEntity<SubscriptionDto> checkSubscription(@RequestParam("payment_id") String paymentId,
                                              @RequestParam("subscription_id") String subscriptionId) {
-        return subscriptionService.checkPayment(
+        return ResponseEntity.ok(subscriptionService.checkPayment(
                 SubscriptionRequestDto.builder()
                         .paymentId(paymentId)
                         .subscriptionId(subscriptionId)
                         .build()
-        );
+        ));
     }
 
     @DeleteMapping("subscriptions")
-    public SubscriptionDto deleteSubscription(@RequestParam("user_id") String userId) {
-        return subscriptionService.requestSubscriptionDeletion(userId);
+    public ResponseEntity<SubscriptionDto> deleteSubscription(@RequestParam("user_id") String userId) {
+        return ResponseEntity.ok(subscriptionService.requestSubscriptionDeletion(userId));
     }
 }

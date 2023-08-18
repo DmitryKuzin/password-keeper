@@ -64,7 +64,7 @@ public class UsersRestControllerTest {
                                 "\"login\" : \"login\"," +
                                 "\"password\" : \"12345\"" +
                                 "}")
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().string("ERROR"));
+        ).andDo(print()).andExpect(status().isBadRequest()).andExpect(content().string("User with login \"login\" already exists in database!"));
     }
 
 }

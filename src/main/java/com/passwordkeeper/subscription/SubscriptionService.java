@@ -73,7 +73,12 @@ public class SubscriptionService {
     public SubscriptionDto requestSubscriptionCreation(SubscriptionRequestDto subscriptionRequestDto) {
         Subscription alreadyExistingSubscription = subscriptionRepository.findByUserId(subscriptionRequestDto.getUserId());
         if (subscriptionCheckService.isSubscriptionValid(alreadyExistingSubscription)) {
-            throw new IllegalStateException("User already has subscription");
+            return SubscriptionDto.builder()
+                    .subscriptionId(String.valueOf(alreadyExistingSubscription.getSubscriptionId()))
+                    .status(SubscriptionStatus.valueOf(alreadyExistingSubscription.getStatus()))
+                    .expirationDate(dateToString(alreadyExistingSubscription.getExpirationDate()))
+                    .paymentId(alreadyExistingSubscription.getPaymentId())
+                    .build();
         }
         String paymentId = paymentRepository.requestPayment();
         Subscription saved = subscriptionRepository.save(Subscription.builder()
