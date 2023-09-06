@@ -1,15 +1,21 @@
 package com.passwordkeeper.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.passwordkeeper.user.UserAccountType.FREE;
 import static com.passwordkeeper.user.UserAccountType.PREMIUM;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -89,5 +95,22 @@ public class UserService {
         user.setPasswordsCount(user.getPasswordsCount() + 1);
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByLogin(username);
+        if (user != null) {
+            return UserDetailsDto.builder()
+                    .username(user.getLogin())
+                    .password(user.getPassword())
+                    .authorities(Stream.of(user.getAccountType()).map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList()))
+                    .isAccountExpired(user.isAccountExpired())
+                    .isAccountNonLocked(user.isAccountNonLocked())
+                    .isEnabled(user.isEnabled())
+                    .build();
+        }
+        return null;
     }
 }

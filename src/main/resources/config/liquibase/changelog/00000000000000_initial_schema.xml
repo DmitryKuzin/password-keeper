@@ -11,6 +11,9 @@
             <column name="password" type="varchar(50)" />
             <column name="account_type" type="varchar(50)" />
             <column name="passwords_count" type="integer" />
+            <column name="is_account_expired" type="bool" />
+            <column name="is_account_non_locked" type="bool" />
+            <column name="is_enabled" type="bool" />
         </createTable>
         <createTable tableName="passwords">
             <column name="id" type="serial">

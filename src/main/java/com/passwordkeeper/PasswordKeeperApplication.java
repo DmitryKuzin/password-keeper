@@ -13,8 +13,4 @@ public class PasswordKeeperApplication {
         SpringApplication.run(PasswordKeeperApplication.class, args);
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/**");
-    }
 }

@@ -32,7 +32,7 @@ public class UserServiceTest {
 
     @Test
     public void should_return_existing_user_by_id() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 0, FREE.name())));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 0, FREE.name(), false, false, true)));
 
         UserDto byId = userService.findById("1");
 
@@ -56,7 +56,7 @@ public class UserServiceTest {
     @Test
     public void should_update_user_account_type_by_id() {
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 0, FREE.name())));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 0, FREE.name(), false, false, true)));
 
         userService.updateUserAccountTypeByUserId("1", PREMIUM);
         verify(userRepository, times(1)).save(userArgumentCaptor.capture());
@@ -76,7 +76,7 @@ public class UserServiceTest {
     @Test
     public void should_find_user_by_login() {
 
-        when(userRepository.findByLogin("login")).thenReturn(new UserEntity(1L, "login", "124", 0, FREE.name()));
+        when(userRepository.findByLogin("login")).thenReturn(new UserEntity(1L, "login", "124", 0, FREE.name(), false, false, true));
 
         UserDto login = userService.findByLogin("login");
 
@@ -94,7 +94,7 @@ public class UserServiceTest {
     public void should_create_user_by_request() {
 
         when(userRepository.save(any()))
-                .thenReturn(new UserEntity(1L, "login", "124", 0, FREE.name()));
+                .thenReturn(new UserEntity(1L, "login", "124", 0, FREE.name(), false, false, true));
 
         UserDto savedUser = userService.create(new UserRequestDto("login", "124"));
 
@@ -114,7 +114,7 @@ public class UserServiceTest {
 
     @Test
     public void should_increment_passwords_count() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 4, FREE.name())));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 4, FREE.name(), false, false, true)));
         boolean resultForFreeAccount = userService.passwordsCountIncremented("1");
 
         assertThat(resultForFreeAccount).isTrue();
@@ -122,7 +122,7 @@ public class UserServiceTest {
         UserEntity savingValue = userArgumentCaptor.getValue();
         assertThat(savingValue.getPasswordsCount()).isEqualTo(5);
 
-        when(userRepository.findById(2L)).thenReturn(Optional.of(new UserEntity(2L, "login", "124",9999 , PREMIUM.name())));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(new UserEntity(2L, "login", "124",9999 , PREMIUM.name(), false, false, true)));
         boolean resultForPremiumAccount = userService.passwordsCountIncremented("2");
 
         assertThat(resultForPremiumAccount).isTrue();
@@ -134,12 +134,12 @@ public class UserServiceTest {
     @Test
     public void should_not_increment_passwords_count() {
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 5, FREE.name())));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserEntity(1L, "login", "124", 5, FREE.name(), false, false, true)));
         boolean resultForFreeAccount = userService.passwordsCountIncremented("1");
         assertThat(resultForFreeAccount).isFalse();
         verify(userRepository, never()).save(any());
 
-        when(userRepository.findById(2L)).thenReturn(Optional.of(new UserEntity(2L, "login", "124",10000 , PREMIUM.name())));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(new UserEntity(2L, "login", "124",10000 , PREMIUM.name(), false, false, true)));
         boolean resultForPremiumAccount = userService.passwordsCountIncremented("2");
         assertThat(resultForPremiumAccount).isFalse();
         verify(userRepository, never()).save(any());

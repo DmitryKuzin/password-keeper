@@ -25,6 +25,9 @@ public class UserEntity {
     private String password;
     private Integer passwordsCount;
     private String accountType;
+    private boolean isAccountExpired;
+    private boolean isAccountNonLocked;
+    private boolean isEnabled;
 
     @Override
     public boolean equals(Object o) {
