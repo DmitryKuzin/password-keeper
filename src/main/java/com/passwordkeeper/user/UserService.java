@@ -1,10 +1,12 @@
 package com.passwordkeeper.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,10 +17,14 @@ import static com.passwordkeeper.user.UserAccountType.FREE;
 import static com.passwordkeeper.user.UserAccountType.PREMIUM;
 
 @Service
+@Slf4j
 public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public void updateUserAccountTypeByUserId(String userId, UserAccountType userAccountType) {
         Optional<UserEntity> byId = userRepository.findById(Long.parseLong(userId));
@@ -30,7 +36,11 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto findById(String userId) {
-        Optional<UserEntity> result = userRepository.findById(Long.valueOf(userId));
+        return findById(Long.valueOf(userId));
+    }
+
+    public UserDto findById(Long userId) {
+        Optional<UserEntity> result = userRepository.findById(userId);
         if (result.isPresent()) {
             UserEntity user = result.get();
             return UserDto.builder()
@@ -44,13 +54,15 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto create(UserRequestDto userRequestDto) {
-        UserEntity saved = userRepository.save(
-                UserEntity.builder()
-                        .login(userRequestDto.getLogin())
-                        .password(userRequestDto.getPassword())
-                        .passwordsCount(0)
-                        .accountType(FREE.name())
-                        .build());
+        UserEntity saved = userRepository.save(UserEntity.builder()
+                .login(userRequestDto.getLogin())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .passwordsCount(0)
+                .accountType(FREE.name())
+                .isAccountNonExpired(true)
+                .isEnabled(true)
+                .isAccountNonLocked(true)
+                .build());
         return UserDto.builder()
                 .id(String.valueOf(saved.getId()))
                 .login(saved.getLogin())
@@ -102,11 +114,12 @@ public class UserService implements UserDetailsService {
         UserEntity user = userRepository.findByLogin(username);
         if (user != null) {
             return UserDetailsDto.builder()
+                    .id(user.getId())
                     .username(user.getLogin())
                     .password(user.getPassword())
                     .authorities(Stream.of(user.getAccountType()).map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList()))
-                    .isAccountExpired(user.isAccountExpired())
+                    .isAccountNonExpired(user.isAccountNonExpired())
                     .isAccountNonLocked(user.isAccountNonLocked())
                     .isEnabled(user.isEnabled())
                     .build();

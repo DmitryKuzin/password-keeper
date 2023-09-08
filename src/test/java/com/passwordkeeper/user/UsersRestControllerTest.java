@@ -1,10 +1,15 @@
 package com.passwordkeeper.user;
 
+import com.passwordkeeper.auth.AuthEntryPointJwt;
+import com.passwordkeeper.auth.JwtAuthFilter;
+import com.passwordkeeper.auth.JwtService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -24,14 +29,22 @@ public class UsersRestControllerTest {
     @MockBean
     UserService userService;
 
+    @Autowired
+    private JwtAuthFilter authFilter;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    PasswordEncoder passwordEncoder;
+
+    @SpyBean
+    AuthEntryPointJwt unauthorizedHandler;
+
     @Test
-    void should_return_user_1_info_by_id_and_return_200() throws Exception {
-        String userId = "1";
+    void should_not_return_user_info_and_return_403() throws Exception {
 
-        when(userService.findById(userId)).thenReturn(UserDto.builder().id(userId).passwordsCount(0).accountType(UserAccountType.FREE).login("login").build());
-
-        mockMvc.perform(get("/users/" + userId)).andDo(print()).andExpect(status().isOk()).andExpect(content().json(
-                "{\"id\":\"1\",\"login\":\"login\",\"passwordsCount\":0,\"accountType\":\"FREE\"}"));
+        mockMvc.perform(get("/user/")).andDo(print()).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -42,7 +55,7 @@ public class UsersRestControllerTest {
         when(userService.create(createUserRequest)).thenReturn(new UserDto("1", "login", 0, UserAccountType.FREE));
 
         mockMvc.perform(
-                post("/users")
+                post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"login\" : \"login\"," +
@@ -58,7 +71,7 @@ public class UsersRestControllerTest {
         verify(userService, never()).create(any());
 
         mockMvc.perform(
-                post("/users")
+                post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"login\" : \"login\"," +

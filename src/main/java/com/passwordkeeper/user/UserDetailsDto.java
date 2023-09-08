@@ -16,9 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 public class UserDetailsDto implements UserDetails {
 
+    private Long id;
     private String password;
     private String username;
-    private boolean isAccountExpired;
+    private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
     private boolean isEnabled;
     private List<GrantedAuthority> authorities;
@@ -41,7 +42,7 @@ public class UserDetailsDto implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isAccountExpired;
+        return isAccountNonExpired;
     }
 
     @Override
@@ -51,11 +52,19 @@ public class UserDetailsDto implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
         return isEnabled;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

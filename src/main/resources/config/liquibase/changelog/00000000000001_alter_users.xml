@@ -1,0 +1,10 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--alter table users-->
+    <changeSet id="00000000000002" author="kuzin.d">
+        <addColumn tableName="users">
+            <column name="is_account_non_expired" type="bool" />
+            <column name="is_account_non_locked" type="bool" />
+            <column name="is_enabled" type="bool" />
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

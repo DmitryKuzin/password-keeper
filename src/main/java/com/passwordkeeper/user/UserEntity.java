@@ -25,7 +25,7 @@ public class UserEntity {
     private String password;
     private Integer passwordsCount;
     private String accountType;
-    private boolean isAccountExpired;
+    private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
     private boolean isEnabled;
 

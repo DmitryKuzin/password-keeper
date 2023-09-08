@@ -2,21 +2,22 @@ package com.passwordkeeper.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("users")
+@RequestMapping("user")
 public class UserRestController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
+    @GetMapping
+    public ResponseEntity<UserDto> getUserById() {
+        UserDetailsDto principal = (UserDetailsDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = principal.getId();
         UserDto user = userService.findById(userId);
         if (user != null) {
             return ResponseEntity.ok(user);

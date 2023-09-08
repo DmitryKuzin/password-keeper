@@ -18,7 +18,7 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/auth")
+    @PostMapping("auth")
     public String authenticate(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {

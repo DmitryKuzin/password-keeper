@@ -2,13 +2,9 @@ package com.passwordkeeper.user;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -23,6 +19,9 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
@@ -96,6 +95,8 @@ public class UserServiceTest {
         when(userRepository.save(any()))
                 .thenReturn(new UserEntity(1L, "login", "124", 0, FREE.name(), false, false, true));
 
+        when(passwordEncoder.encode("124")).thenReturn("456");
+
         UserDto savedUser = userService.create(new UserRequestDto("login", "124"));
 
         verify(userRepository, times(1)).save(userArgumentCaptor.capture());
@@ -105,7 +106,7 @@ public class UserServiceTest {
         assertThat(savingUser).isNotNull();
         assertThat(savingUser.getAccountType()).isEqualTo(FREE.name());
         assertThat(savingUser.getPasswordsCount()).isEqualTo(0);
-        assertThat(savingUser.getPassword()).isEqualTo("124");
+        assertThat(savingUser.getPassword()).isEqualTo("456");
         assertThat(savingUser.getLogin()).isEqualTo("login");
 
         assertThat(savedUser).isNotNull();

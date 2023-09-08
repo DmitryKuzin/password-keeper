@@ -2,5 +2,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false" />
+    <include file="classpath:config/liquibase/changelog/00000000000001_alter_users.xml" relativeToChangelogFile="false" />
+    <include file="classpath:config/liquibase/changelog/00000000000002_alter_users_change_login_password_length.xml" relativeToChangelogFile="false" />
 
 </databaseChangeLog>
