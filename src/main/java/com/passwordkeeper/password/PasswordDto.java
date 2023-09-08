@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class PasswordDto {
 
     public String userId;
-    public String website_name;
+    public String websiteName;
     public String password;
 
 }

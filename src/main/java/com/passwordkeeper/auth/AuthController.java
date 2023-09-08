@@ -1,5 +1,6 @@
 package com.passwordkeeper.auth;
 
+import com.passwordkeeper.user.UserDetailsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +20,11 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("auth")
-    public String authenticate(@RequestBody AuthRequest authRequest) {
+    public AuthDto authenticate(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
+            UserDetailsDto principal = (UserDetailsDto) authentication.getPrincipal();
+            return AuthDto.builder().token(jwtService.generateToken(authRequest.getUsername())).userId(String.valueOf(principal.getId())).build();
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }

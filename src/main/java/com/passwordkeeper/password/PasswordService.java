@@ -2,7 +2,6 @@ package com.passwordkeeper.password;
 
 import com.passwordkeeper.subscription.SubscriptionService;
 import com.passwordkeeper.user.*;
-import com.passwordkeeper.utils.IdGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class PasswordService {
         List<PasswordDto> result = new ArrayList<>();
         passwordRepository.findAllByUserId(userId).forEach(password -> {
             if (password != null && password.getPassword() != null && password.getWebsiteName() != null) {
-                result.add(PasswordDto.builder().password(password.getPassword()).website_name(password.getWebsiteName()).userId(password.getUserId()).build());
+                result.add(PasswordDto.builder().password(password.getPassword()).websiteName(password.getWebsiteName()).userId(password.getUserId()).build());
             }
         });
         return result;
@@ -43,7 +42,7 @@ public class PasswordService {
             passwordRepository.save(
                     PasswordEntity.builder()
                             .password(dto.getPassword())
-                            .websiteName(dto.getWebsite_name())
+                            .websiteName(dto.getWebsiteName())
                             .userId(dto.getUserId())
                             .build()
             );
