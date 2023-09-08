@@ -1,0 +1,1 @@
+docker run -ti --rm -e DB_HOST=192.168.2.18 -p 8081:8080 password-keeper
