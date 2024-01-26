@@ -38,13 +38,30 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/api/public/**",
+            "/api/public/authenticate",
+            "/actuator/*",
+            "/swagger-ui/**"
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and()
                 .sessionManagement().sessionConcurrency(c -> c.maximumSessions(1)).and()
-                .authorizeRequests().antMatchers(HttpMethod.POST,"/user").permitAll()
+                .authorizeRequests()
+                .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/user").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth" ).permitAll()
                 .anyRequest().authenticated();
 

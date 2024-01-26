@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: password-keeper-api
+  labels:
+    app: password-keeper-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: password-keeper-api
+  template:
+    metadata:
+      labels:
+        app: password-keeper-api
+    spec:
+      containers:
+        - name: password-keeper-api
+          image: 'dmitriykuzin/password-keeper:1.0.0'
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: postgres-db-service
+            - name: spring.mvc.servlet.path
+              value: /password-keeper-api
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: password-keeper-service
+spec:
+  selector:
+    app: password-keeper-api
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minik-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /pk
+            backend:
+              service:
+                name: password-keeper-service
+                port:
+                  number: 80
