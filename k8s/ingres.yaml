@@ -16,14 +16,12 @@ spec:
     spec:
       containers:
         - name: password-keeper-api
-          image: 'dmitriykuzin/password-keeper:1.0.0'
+          image: 'dmitriykuzin/password-keeper:1.0.3'
           ports:
             - containerPort: 8080
           env:
             - name: DB_HOST
               value: postgres-db-service
-            - name: spring.mvc.servlet.path
-              value: /password-keeper-api
 ---
 kind: Service
 apiVersion: v1
@@ -40,12 +38,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: minik-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
+  ingressClassName: nginx
   rules:
-    - http:
+    - host: dk-dev.com
+      http:
         paths:
-          - pathType: Prefix
-            path: /pk
+          - path: /pk(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: password-keeper-service

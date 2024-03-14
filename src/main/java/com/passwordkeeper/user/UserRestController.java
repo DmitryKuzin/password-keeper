@@ -1,5 +1,6 @@
 package com.passwordkeeper.user;
 
+import com.passwordkeeper.notification.ClientNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,9 @@ public class UserRestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ClientNotificationService clientNotificationService;
 
     @GetMapping
     public ResponseEntity<UserDto> getUserById() {
@@ -30,6 +34,7 @@ public class UserRestController {
         UserDto result = userService.findByLogin(requestDto.getLogin());
         if (result == null) {
             UserDto saved = userService.create(requestDto);
+            clientNotificationService.notify(saved.getId(), "Confirm email please!");
             return ResponseEntity.ok(String.valueOf(saved.getId()));
         } else {
             String errorMessage = String.format("User with login \"%s\" already exists in database!", requestDto.getLogin());

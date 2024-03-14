@@ -3,6 +3,7 @@ package com.passwordkeeper.user;
 import com.passwordkeeper.auth.AuthEntryPointJwt;
 import com.passwordkeeper.auth.JwtAuthFilter;
 import com.passwordkeeper.auth.JwtService;
+import com.passwordkeeper.notification.ClientNotificationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -37,6 +38,9 @@ public class UsersRestControllerTest {
 
     @MockBean
     PasswordEncoder passwordEncoder;
+
+    @MockBean
+    ClientNotificationService clientNotificationService;
 
     @SpyBean
     AuthEntryPointJwt unauthorizedHandler;
